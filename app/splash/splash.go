@@ -39,7 +39,7 @@ func (s *Splash) Draw(screen *ebiten.Image) {
 	op.GeoM.Scale(scale, scale)
 	op.GeoM.Translate(sx/2-(s.imageSize*scale)/2, sy/2-(s.imageSize*scale)/2)
 	if s.colorScale < 1 {
-		s.colorScale += 0.01
+		s.colorScale += 0.02
 		colorScale := ebiten.ColorScale{}
 		colorScale.ScaleAlpha(float32(s.colorScale))
 		op.ColorScale = colorScale
