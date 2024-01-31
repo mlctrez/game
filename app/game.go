@@ -3,7 +3,7 @@ package app
 import (
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
-	"github.com/mlctrez/game/app/splash"
+	"github.com/mlctrez/game/app/compo"
 	"os"
 )
 
@@ -13,25 +13,23 @@ func New() *Game {
 		ebiten.SetWindowSize(1280, 1024)
 		ebiten.SetCursorShape(ebiten.CursorShapeCrosshair)
 	}
-	return &Game{splash: splash.New()}
+	return &Game{compo: compo.Splash()}
 }
 
 type Game struct {
-	splash *splash.Splash
+	compo compo.Compo
 }
 
-func (g *Game) Update() error {
+func (g *Game) Update() (err error) {
 	if inpututil.IsKeyJustPressed(ebiten.KeyF11) {
 		ebiten.SetFullscreen(!ebiten.IsFullscreen())
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyP) {
-		g.splash.Visible(false)
-	}
-	return nil
+	g.compo, err = g.compo.Update()
+	return err
 }
 
 func (g *Game) Draw(screen *ebiten.Image) {
-	g.splash.Draw(screen)
+	g.compo.Draw(screen)
 }
 
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
