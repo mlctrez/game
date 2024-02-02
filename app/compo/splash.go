@@ -36,7 +36,7 @@ func (s *splash) Draw(screen *ebiten.Image) {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Scale(scale, scale)
-	op.GeoM.Translate(sx/2-(s.imageSize*scale)/2, sy/2-(s.imageSize*scale)/2)
+	op.GeoM.Translate(sx/2-(s.imageSize*scale)/2, sy/2-(s.imageSize*scale)/2-(sy/2-(sy/2*s.colorScale)))
 	if s.colorScale < 1 {
 		s.colorScale += 0.02
 		colorScale := ebiten.ColorScale{}

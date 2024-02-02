@@ -13,7 +13,7 @@ func New() *Game {
 		ebiten.SetWindowSize(1280, 1024)
 		ebiten.SetCursorShape(ebiten.CursorShapeCrosshair)
 	}
-	return &Game{compo: compo.Splash()}
+	return &Game{compo: compo.Surface()}
 }
 
 type Game struct {
