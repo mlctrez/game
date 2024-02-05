@@ -4,6 +4,8 @@ go 1.21
 
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.6.4
+	github.com/kardianos/service v1.2.2
+	github.com/mlctrez/servicego v1.4.6
 	github.com/mlctrez/wasmexec v1.0.18
 	golang.org/x/image v0.15.0
 )

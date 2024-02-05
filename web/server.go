@@ -1,9 +1,12 @@
 package main
 
 import (
+	"context"
 	"embed"
 	_ "embed"
 	"fmt"
+	"github.com/kardianos/service"
+	"github.com/mlctrez/servicego"
 	"github.com/mlctrez/wasmexec"
 	"log"
 	"net/http"
@@ -11,34 +14,54 @@ import (
 	"os/exec"
 )
 
-func main() {
+type Service struct {
+	servicego.Defaults
+	httpServer *http.Server
+}
+
+func (s *Service) Start(_ service.Service) error {
+
+	httpServer := &http.Server{}
+	httpServer.Addr = os.Getenv("ADDRESS")
+	if httpServer.Addr == "" {
+		httpServer.Addr = ":8080"
+	}
+
 	mux := http.NewServeMux()
-	// TODO: remove and use embedded FS
-	files := http.FileServer(http.Dir("web"))
+	httpServer.Handler = mux
+
+	files := http.FileServer(http.FS(fs))
 	handler := func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/favicon.ico":
 			w.WriteHeader(404)
 		case "/app.js":
 			writeAppJs(w)
-		case "/app.wasm":
-			err := buildWasm()
-			if err != nil {
-				w.WriteHeader(500)
-				_, _ = w.Write([]byte(err.Error()))
-				return
-			}
-			files.ServeHTTP(w, r)
 		default:
 			files.ServeHTTP(w, r)
 		}
 	}
 	mux.HandleFunc("/", handler)
+	s.httpServer = httpServer
 
-	_ = http.ListenAndServe(":8080", mux)
+	go func() {
+		_ = httpServer.ListenAndServe()
+	}()
+	return nil
 }
 
-//go:embed *.js *.html *.css
+func (s *Service) Stop(_ service.Service) error {
+	if s.httpServer != nil {
+		return s.httpServer.Shutdown(context.Background())
+	}
+	return nil
+}
+
+func main() {
+	servicego.Run(&Service{})
+}
+
+//go:embed *.js *.html *.css *.wasm
 var fs embed.FS
 
 func writeAppJs(w http.ResponseWriter) {
