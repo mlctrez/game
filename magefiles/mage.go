@@ -18,11 +18,11 @@ func Deploy(ctx context.Context) error {
 	if err != nil {
 		return err
 	}
-	err = exec.Command("scp", "temp/app.bin", "optiplex:/tmp/asteroids").Run()
+	err = exec.Command("scp", "temp/app.bin", "optiplex:/tmp/game").Run()
 	if err != nil {
 		return err
 	}
-	return exec.Command("ssh", "optiplex", "sudo", "/tmp/asteroids", "-action", "deploy").Run()
+	return exec.Command("ssh", "optiplex", "sudo", "/tmp/game", "-action", "deploy").Run()
 }
 
 func makeTemp(ctx context.Context) (err error) {
